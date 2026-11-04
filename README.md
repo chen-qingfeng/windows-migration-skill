@@ -153,8 +153,8 @@ windows-migration-skill/
 
 分类规则目前是启发式的，肯定会漏、会错。最有用的反馈是：
 
-1. **跑一遍，把你的报告（脱敏后）贴到 [Discussions](https://github.com/chen-qingfeng/windows-migration-skill/discussions)**
-2. **开 issue 说"它把我这 3 个软件判错了"** —— 这比 star 有用一百倍
+1. **跑一遍，把你的报告（脱敏后）发到 [Issues](https://github.com/chen-qingfeng/windows-migration-skill/issues)**
+2. **直接说"它把我这 3 个软件判错了"** —— 这比 star 有用一百倍
 
 ---
 
