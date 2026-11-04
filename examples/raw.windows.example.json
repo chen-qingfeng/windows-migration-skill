@@ -1,0 +1,125 @@
+{
+  "schema_version": "0.1",
+  "tool": "windows-migration-skill",
+  "platform": "windows",
+  "generated_at": "2026-11-04T08:30:00Z",
+  "machine": {
+    "os": "Windows 11",
+    "os_display": "Windows 11 24H2 (build 26100)",
+    "os_version": "24H2",
+    "build": "26100",
+    "arch": "x64",
+    "locale": "zh-CN",
+    "user": "demo",
+    "powershell": "5.1.22621.4249",
+    "is_admin": false
+  },
+  "registry": [
+    {
+      "name": "Git",
+      "normalized_name": "git",
+      "version": "2.47.0",
+      "publisher": "The Git Development Community",
+      "install_location": "C:\\Program Files\\Git\\",
+      "uninstall_string": "\"C:\\Program Files\\Git\\uninstall.exe\"",
+      "product_code": "",
+      "source": "registry",
+      "config_hints": []
+    },
+    {
+      "name": "7-Zip 24.09 (x64)",
+      "normalized_name": "7zip",
+      "version": "24.09",
+      "publisher": "Igor Pavlov",
+      "install_location": "C:\\Program Files\\7-Zip\\",
+      "uninstall_string": "\"C:\\Program Files\\7-Zip\\Uninstall.exe\"",
+      "product_code": "",
+      "source": "registry",
+      "config_hints": []
+    },
+    {
+      "name": "Adobe Photoshop 2024",
+      "normalized_name": "adobephotoshop",
+      "version": "25.0",
+      "publisher": "Adobe Inc.",
+      "install_location": "C:\\Program Files\\Adobe\\Adobe Photoshop 2024\\",
+      "uninstall_string": "",
+      "product_code": "",
+      "source": "registry",
+      "config_hints": ["C:\\Users\\demo\\AppData\\Roaming\\Adobe"]
+    },
+    {
+      "name": "某行业软件 FastTFT64 V16.2",
+      "normalized_name": "某行业软件fasttft",
+      "version": "",
+      "publisher": "",
+      "install_location": "D:\\FastTFT\\",
+      "uninstall_string": "",
+      "product_code": "",
+      "source": "registry",
+      "config_hints": []
+    },
+    {
+      "name": "微信",
+      "normalized_name": "微信",
+      "version": "4.0.1",
+      "publisher": "Tencent",
+      "install_location": "C:\\Program Files\\Tencent\\WeChat\\",
+      "uninstall_string": "",
+      "product_code": "",
+      "source": "registry",
+      "config_hints": ["C:\\Users\\demo\\AppData\\Roaming\\Tencent"]
+    }
+  ],
+  "winget": [
+    { "id": "Git.Git", "version": "2.47.0", "source_name": "winget" },
+    { "id": "7zip.7zip", "version": "24.09", "source_name": "winget" },
+    { "id": "Microsoft.VisualStudioCode", "version": "1.95.0", "source_name": "winget" },
+    { "id": "Adobe.Photoshop", "version": "25.0", "source_name": "winget" }
+  ],
+  "scoop": [],
+  "choco": [],
+  "store": [
+    {
+      "name": "Tencent.WeChat",
+      "version": "4.0.1.0",
+      "publisher": "CN=Tencent",
+      "package_full_name": "Tencent.WeChat_4.0.1.0_x64__demo",
+      "source": "store"
+    },
+    {
+      "name": "AdvancedMicroDevicesInc-2.AMDRadeonSoftware",
+      "version": "10.23.19012.0",
+      "publisher": "CN=Advanced Micro Devices",
+      "package_full_name": "AdvancedMicroDevicesInc-2.AMDRadeonSoftware_10.23.19012.0_x64__demo",
+      "source": "store"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "OpenFilm",
+      "target": "D:\\Program Files\\OpenFilm\\OpenFilm.exe",
+      "folder": "D:\\Program Files\\OpenFilm",
+      "source": "shortcut"
+    }
+  ],
+  "big_paths": [
+    {
+      "label": "Ollama models",
+      "path": "C:\\Users\\demo\\.ollama\\models",
+      "kind": "local_models",
+      "size_bytes": 19756849561,
+      "file_count": 12,
+      "truncated": false
+    },
+    {
+      "label": "WSL: Ubuntu",
+      "path": "C:\\Users\\demo\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc\\LocalState\\ext4.vhdx",
+      "kind": "vm_disk",
+      "size_bytes": 17179869184,
+      "file_count": 1,
+      "truncated": false
+    }
+  ],
+  "warnings": []
+}

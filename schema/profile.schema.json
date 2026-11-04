@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/chen-qingfeng/-/blob/main/schema/profile.schema.json",
+  "title": "windows-migration-skill raw profile",
+  "description": "Read-only inventory produced by collect/win.ps1 or collect/mac.sh. Consumed by an agent to classify entries and render report.md.",
+  "type": "object",
+  "required": ["schema_version", "tool", "platform", "generated_at", "machine"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "tool": { "type": "string" },
+    "platform": { "enum": ["windows", "macos"] },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "machine": {
+      "type": "object",
+      "properties": {
+        "os": { "type": "string" },
+        "os_display": { "type": "string" },
+        "os_version": { "type": "string" },
+        "build": { "type": "string" },
+        "arch": { "enum": ["x64", "arm64", "x86", "arm64e", "i386", ""] },
+        "cpu": { "type": "string" },
+        "hostname": { "type": "string" },
+        "locale": { "type": "string" },
+        "user": { "type": "string" },
+        "powershell": { "type": "string" },
+        "is_admin": { "type": "boolean" }
+      }
+    },
+    "registry": {
+      "type": "array",
+      "description": "Windows only. One entry per uninstall registry key.",
+      "items": { "$ref": "#/definitions/registry_app" }
+    },
+    "winget": {
+      "type": "array",
+      "description": "Windows only. Output of `winget export`.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "version": { "type": "string" },
+          "source_name": { "type": "string" }
+        }
+      }
+    },
+    "scoop": { "type": "array", "items": { "type": "object" } },
+    "choco": { "type": "array", "items": { "type": "object" } },
+    "store": {
+      "type": "array",
+      "description": "Windows only. Microsoft Store (Appx) packages.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "publisher": { "type": "string" },
+          "package_full_name": { "type": "string" },
+          "source": { "const": "store" }
+        }
+      }
+    },
+    "shortcuts": {
+      "type": "array",
+      "description": "Windows only. Start menu shortcuts pointing outside Program Files (portable app candidates).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "target": { "type": "string" },
+          "folder": { "type": "string" },
+          "source": { "const": "shortcut" }
+        }
+      }
+    },
+    "apps": {
+      "type": "array",
+      "description": "macOS only. One entry per .app bundle.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "bundle_id": { "type": "string" },
+          "version": { "type": "string" },
+          "path": { "type": "string" },
+          "config_hints": { "type": "array", "items": { "type": "string" } },
+          "source": { "const": "app_bundle" }
+        }
+      }
+    },
+    "brews": {
+      "type": "array",
+      "description": "macOS only. Homebrew formulae and casks.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "kind": { "enum": ["formula", "cask"] }
+        }
+      }
+    },
+    "dotfiles": {
+      "type": "array",
+      "description": "macOS only. Dotfile paths that exist.",
+      "items": { "type": "string" }
+    },
+    "big_paths": {
+      "type": "array",
+      "description": "Large folders worth transferring separately (models, VM disks, game libraries).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "path": { "type": "string" },
+          "kind": {
+            "enum": ["local_models", "vm_disk", "game_library", "build_cache", "vm_disk_scan"]
+          },
+          "size_bytes": { "type": "integer", "minimum": 0 },
+          "file_count": { "type": "integer", "minimum": 0 },
+          "truncated": { "type": "boolean" }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "description": "Non-fatal problems encountered during collection. Surface these to the user.",
+      "items": { "type": "string" }
+    }
+  },
+  "definitions": {
+    "registry_app": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "normalized_name": { "type": "string" },
+        "version": { "type": "string" },
+        "publisher": { "type": "string" },
+        "install_location": { "type": "string" },
+        "uninstall_string": { "type": "string" },
+        "product_code": { "type": "string" },
+        "source": { "const": "registry" },
+        "config_hints": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

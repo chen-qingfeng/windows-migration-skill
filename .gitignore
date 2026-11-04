@@ -1,0 +1,11 @@
+# Collector output (contains machine-specific paths)
+profile.raw.json
+profile.json
+report.md
+
+# Editor / OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.tmp

@@ -1,0 +1,78 @@
+{
+  "schema_version": "0.1",
+  "tool": "windows-migration-skill",
+  "platform": "macos",
+  "generated_at": "2026-11-04T08:30:00Z",
+  "machine": {
+    "os": "macOS",
+    "os_display": "macOS 15.1",
+    "os_version": "15.1",
+    "build": "24B83",
+    "arch": "arm64",
+    "cpu": "Apple M3 Pro",
+    "hostname": "demo-macbook",
+    "locale": "zh_CN.UTF-8"
+  },
+  "apps": [
+    {
+      "name": "Visual Studio Code",
+      "bundle_id": "com.microsoft.VSCode",
+      "version": "1.95.0",
+      "path": "/Applications/Visual Studio Code.app",
+      "config_hints": ["/Users/demo/Library/Application Support/Code"],
+      "source": "app_bundle"
+    },
+    {
+      "name": "Cursor",
+      "bundle_id": "com.todesktop.230313mzl4w4u92",
+      "version": "0.42.3",
+      "path": "/Applications/Cursor.app",
+      "config_hints": ["/Users/demo/Library/Application Support/Cursor"],
+      "source": "app_bundle"
+    },
+    {
+      "name": "Docker",
+      "bundle_id": "com.docker.docker",
+      "version": "4.34.2",
+      "path": "/Applications/Docker.app",
+      "config_hints": ["/Users/demo/Library/Containers/com.docker.docker"],
+      "source": "app_bundle"
+    },
+    {
+      "name": "某行业软件",
+      "bundle_id": "com.example.industryapp",
+      "version": "8.2",
+      "path": "/Applications/某行业软件.app",
+      "config_hints": [],
+      "source": "app_bundle"
+    }
+  ],
+  "brews": [
+    { "name": "git", "kind": "formula" },
+    { "name": "ripgrep", "kind": "formula" },
+    { "name": "visual-studio-code", "kind": "cask" },
+    { "name": "docker", "kind": "cask" }
+  ],
+  "dotfiles": [
+    "/Users/demo/.zshrc",
+    "/Users/demo/.gitconfig",
+    "/Users/demo/.ssh",
+    "/Users/demo/.config",
+    "/Users/demo/.claude"
+  ],
+  "big_paths": [
+    {
+      "label": "Ollama models",
+      "path": "/Users/demo/.ollama/models",
+      "kind": "local_models",
+      "size_bytes": 12884901888
+    },
+    {
+      "label": "Docker disk",
+      "path": "/Users/demo/Library/Containers/com.docker.docker/Data/vms/0/data/Docker.raw",
+      "kind": "vm_disk",
+      "size_bytes": 25769803776
+    }
+  ],
+  "warnings": []
+}
