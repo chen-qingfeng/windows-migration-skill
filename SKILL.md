@@ -96,6 +96,24 @@ bash collect/mac.sh profile.raw.json
 
 按 `templates/report.md.tmpl` 的结构输出 `report.md`。**保持结构不变**，只填内容。
 
+### Step 6 —（可选）生成还原计划
+
+如果用户是**在新机器上**、想要"把这些装回来"，再跑这一步：
+
+```powershell
+.\scripts\plan.ps1 -Profile profile.json -OutDir .\plan
+```
+
+产出 `plan/restore.md`（三张表）和 `plan/restore.ps1`（**默认 dry-run**）。
+
+之后：
+
+- **可以**告诉用户"先跑 `.\restore.ps1` 看看会装什么"
+- **不要**替用户执行 `-Apply`
+- **不要**声称已经装好了任何东西
+
+`plan.ps1` 会自己检测当前机器已装了什么，并跳过——所以它应该在**目标机器**上跑，不是在旧机器上。
+
 ---
 
 ## 4. 分类规则

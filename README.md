@@ -109,10 +109,11 @@ bash collect/mac.sh profile.raw.json
 ```powershell
 .\collect\win.ps1 -OutFile profile.raw.json
 .\scripts\classify.ps1 -Raw profile.raw.json -Out profile.json
+.\scripts\plan.ps1 -Profile profile.json -OutDir .\plan
 ```
 
-分类是**确定性的**：同一份输入 + 同一份规则 = 同样的输出（`apps` 数组会排序）。
-规则在 [`rules/classify.json`](rules/classify.json) 里，改规则不用改代码。
+- `classify` 是**确定性的**：同一份输入 + 同一份规则 = 同样的输出（`apps` 数组会排序）。规则在 [`rules/classify.json`](rules/classify.json) 里，改规则不用改代码。
+- `plan` 产出两个文件：`restore.md`（给人看的计划）和 `restore.ps1`（给机器跑，**默认 dry-run**）。
 
 ### 跑测试
 
@@ -134,6 +135,7 @@ windows-migration-skill/
 │   ├── win.ps1               ← Windows 采集器（只读）
 │   └── mac.sh                ← macOS 采集器（只读，实验性）
 ├── scripts/classify.ps1      ← 确定性分类器（读 rules/）
+├── scripts/plan.ps1          ← 生成 restore.md + restore.ps1（默认 dry-run）
 ├── evals/
 │   ├── cases/                ← 固定样本
 │   ├── expected/             ← 预期结果
@@ -167,7 +169,7 @@ windows-migration-skill/
 
 - [x] **v0.1** 体检：采集 + 分类 + 报告（只读）
 - [x] **v0.2** 规则变成数据 + evals：可回归、可比较准确率
-- [ ] **v0.3** 计划：生成还原脚本，**只生成不执行**
+- [x] **v0.3** 计划：生成还原脚本，**只生成不执行**
 - [ ] **v0.4** 安全网：影子环境 + 一键回滚（< 60 秒）
 - [ ] **v0.5** 两台机器：局域网直连，只搬大文件和配置
 - [ ] **v0.6** 垂直配方：AI / 开发环境（Cursor、Ollama、WSL、ComfyUI…）

@@ -69,6 +69,59 @@ foreach ($caseFile in (Get-ChildItem -LiteralPath (Join-Path $root 'evals\cases'
 
 Remove-Item -LiteralPath $tmpDir -Recurse -Force -ErrorAction SilentlyContinue
 
+# ---------------------------------------------------------------- pipeline smoke
+# raw -> classify -> plan, end to end, using the shipped example.
+
+Write-Host ''
+Write-Host '  pipeline: raw -> classify -> plan' -ForegroundColor Cyan
+
+$pipeDir = Join-Path ([System.IO.Path]::GetTempPath()) ('wms-pipe-' + [guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Force -Path $pipeDir | Out-Null
+$smokeOk = $true
+
+try {
+    $exampleRaw = Join-Path $root 'examples\raw.windows.example.json'
+    $pipeProfile = Join-Path $pipeDir 'profile.json'
+
+    & (Join-Path $root 'scripts\classify.ps1') -Raw $exampleRaw -Out $pipeProfile -Quiet
+    & (Join-Path $root 'scripts\plan.ps1') -Profile $pipeProfile -OutDir $pipeDir -SkipInstalledCheck -Quiet
+
+    $mdFile = Join-Path $pipeDir 'restore.md'
+    $psFile = Join-Path $pipeDir 'restore.ps1'
+
+    if (-not (Test-Path -LiteralPath $mdFile)) { Write-Host '          restore.md missing' -ForegroundColor Red; $smokeOk = $false }
+    if (-not (Test-Path -LiteralPath $psFile)) { Write-Host '          restore.ps1 missing' -ForegroundColor Red; $smokeOk = $false }
+
+    if ($smokeOk) {
+        $md = Get-Content -LiteralPath $mdFile -Raw -Encoding UTF8
+        if ($md -notmatch '一条命令能装回来（3）') { Write-Host '          expected 3 auto items in plan' -ForegroundColor Red; $smokeOk = $false }
+        if ($md -notmatch '需要你手动处理（3）') { Write-Host '          expected 3 manual items in plan' -ForegroundColor Red; $smokeOk = $false }
+
+        $generated = Get-Content -LiteralPath $psFile -Raw -Encoding UTF8
+        if ($generated -notmatch '-Apply') { Write-Host '          restore.ps1 lost its -Apply gate' -ForegroundColor Red; $smokeOk = $false }
+
+        $parseErrors = $null; $tokens = $null
+        $null = [System.Management.Automation.Language.Parser]::ParseFile($psFile, [ref]$tokens, [ref]$parseErrors)
+        if ($parseErrors -and $parseErrors.Count -gt 0) {
+            Write-Host ('          generated script does not parse: {0}' -f $parseErrors[0].Message) -ForegroundColor Red
+            $smokeOk = $false
+        }
+    }
+} catch {
+    Write-Host ('          pipeline threw: {0}' -f $_.Exception.Message) -ForegroundColor Red
+    $smokeOk = $false
+}
+
+Remove-Item -LiteralPath $pipeDir -Recurse -Force -ErrorAction SilentlyContinue
+
+if ($smokeOk) {
+    Write-Host '  PASS  pipeline          classify + plan produce a parsable script' -ForegroundColor Green
+    $passed++
+} else {
+    Write-Host '  FAIL  pipeline' -ForegroundColor Red
+    $failed++
+}
+
 Write-Host ''
 Write-Host ('  {0} passed, {1} failed' -f $passed, $failed) -ForegroundColor $(if ($failed -eq 0) { 'Green' } else { 'Red' })
 Write-Host ''
