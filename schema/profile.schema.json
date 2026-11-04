@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/chen-qingfeng/-/blob/main/schema/profile.schema.json",
+  "$id": "https://github.com/chen-qingfeng/windows-migration-skill/blob/main/schema/profile.schema.json",
   "title": "windows-migration-skill raw profile",
   "description": "Read-only inventory produced by collect/win.ps1 or collect/mac.sh. Consumed by an agent to classify entries and render report.md.",
   "type": "object",

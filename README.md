@@ -32,7 +32,7 @@
 
 把这句话贴给你的 Agent（Claude Code / Codex / Cursor / DSH / 任意能跑 shell 的 Agent）：
 
-> 读一下 https://github.com/chen-qingfeng/-/blob/main/SKILL.md，
+> 读一下 https://github.com/chen-qingfeng/windows-migration-skill/blob/main/SKILL.md，
 > 按它的步骤扫描这台电脑，然后给我一份迁移体检报告。
 
 Agent 会自己跑采集脚本、分类、渲染报告。全程只读，不会碰你的系统。
@@ -153,7 +153,7 @@ windows-migration-skill/
 
 分类规则目前是启发式的，肯定会漏、会错。最有用的反馈是：
 
-1. **跑一遍，把你的报告（脱敏后）贴到 [Discussions](https://github.com/chen-qingfeng/-/discussions)**
+1. **跑一遍，把你的报告（脱敏后）贴到 [Discussions](https://github.com/chen-qingfeng/windows-migration-skill/discussions)**
 2. **开 issue 说"它把我这 3 个软件判错了"** —— 这比 star 有用一百倍
 
 ---
