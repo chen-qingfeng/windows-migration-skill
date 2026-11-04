@@ -33,14 +33,16 @@
     },
     "winget": {
       "type": "array",
-      "description": "Windows only. Output of `winget export`.",
+      "description": "Windows only. Parsed from `winget list`. `kind` is the authoritative signal: 'package' means a winget package exists, 'arp' means registry-only, 'msix' means Store app.",
       "items": {
         "type": "object",
         "properties": {
+          "name": { "type": "string" },
           "id": { "type": "string" },
-          "version": { "type": "string" },
-          "source_name": { "type": "string" }
-        }
+          "kind": { "enum": ["package", "arp", "msix"] },
+          "version": { "type": "string" }
+        },
+        "required": ["name", "id", "kind"]
       }
     },
     "scoop": { "type": "array", "items": { "type": "object" } },

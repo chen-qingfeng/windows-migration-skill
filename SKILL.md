@@ -103,21 +103,28 @@ bash collect/mac.sh profile.raw.json
 
 ### 4.1 判 `excluded`
 
-- 名称匹配：`Microsoft Visual C++ .* Redistributable`、`\.NET (Framework|Runtime)`、`Windows SDK`、`Windows Driver Package`、`Update for .*`
-- Windows 商店应用且 `publisher` 属于 OEM/硬件厂商：`AMD`、`Intel`、`NVIDIA`、`Realtek`、`Dolby`、`Synaptics`、`Qualcomm`、`MediaTek`、`Wacom`、`Logitech`、`Conexant`
-- Windows 商店应用且名称属于系统组件：`Microsoft.DesktopAppInstaller`、`Microsoft.SecHealthUI`、`Microsoft.VCLibs.*`、`Microsoft.UI.Xaml.*`、`Microsoft.WindowsAppRuntime.*`
+- **运行库 / 更新 / 驱动**：名称含 `Redistributable`、`Runtime Package`、`\.NET`、`Desktop Runtime`、`ASP\.NET`、`\bSDK\b`、`\bDriver\b`、`^Update for`、`^KB\d`、`WPTx64`、`VCLibs`、`UI\.Xaml`、`WindowsAppRuntime`、`Application Compatibility`
+- **厂商捆绑组件**（它们是某个授权产品的一部分，不是独立条目）：`App Manager`、`Application Manager`、`Material Library`、`Content Service`、`Genuine Service`、`Identity Manager`、`精选应用`、`保存到 Web`、`Performance Feedback`、`Add-in`
+- **系统自带**：`^应用安装程序$`、`^App Installer$`
+- **商店应用**（`kind = msix`）：整体不进主表，单独计数
 - macOS：`/System/Applications` 下的系统应用
 
 > `excluded` 不进入主表，只在报告末尾写一个总数。
 
 ### 4.2 判 `auto`
 
-满足任一条：
+**Windows 上不要猜名字。`winget list` 的 ID 前缀就是答案**（见 4.5）：
 
-1. Windows：能匹配到 `winget` 包（`registry` 条目匹配，或 `winget` 里独立存在）
-2. Windows：出现在 `scoop` 列表
-3. Windows：出现在 `choco` 列表
-4. macOS：能匹配到 `brews` 里的 `formula` 或 `cask`
+| `winget[].kind` | ID 形态 | 判定 |
+|---|---|---|
+| `package` | `Publisher.Product` | **`auto`**，`package_id` 直接用这个 ID |
+| `arp` | `ARP\Machine\X64\{GUID}` | 无 winget 包 → `manual` |
+| `msix` | `MSIX\...` | 商店应用 → 单独计数，不进主表 |
+
+其余来源：
+
+- 出现在 `scoop` / `choco` 列表 → `auto`
+- macOS：匹配到 `brews` 里的 `formula` / `cask` → `auto`
 
 ### 4.3 判 `license`
 
@@ -125,7 +132,7 @@ bash collect/mac.sh profile.raw.json
 
 ```
 Adobe, Autodesk, MATLAB, MathWorks, Office 20, Visio 20, Project 20,
-CorelDRAW, SolidWorks, ANSYS, Siemens NX, CATIA, Origin, ChemDraw,
+CorelDRAW, SolidWorks, ANSYS, Siemens NX, CATIA, ChemDraw, CAD,
 加密狗, 一机一码, 授权码, Dongle
 ```
 
@@ -138,24 +145,28 @@ CorelDRAW, SolidWorks, ANSYS, Siemens NX, CATIA, Origin, ChemDraw,
 
 | 原因码 | 触发条件 | 建议话术 |
 |---|---|---|
-| `store_app` | Windows 商店应用，无包管理器 ID | 从 Microsoft Store 重新安装（商店会记住你买过的） |
-| `no_source` | 注册表有记录但无任何包管理器来源 | 需要原始安装包；先看 `uninstall_string` 里是否留有安装器路径 |
+| `needs_installer` | `kind = arp`，winget 没有对应包 | 需要原始安装包；先看 `uninstall_string` 里是否留有安装器路径 |
+| `unlisted` | 注册表有、`winget list` 里没有 | 同上，且可能是绿色版 |
 | `portable` | 只有开始菜单快捷方式，指向 Program Files 之外 | 直接复制整个目录（`shortcuts[].folder`） |
 | `app_bundle` | macOS `.app` 但无对应 cask | 从官网或 App Store 重新下载 |
 | `dotfile` | macOS 配置文件（不在应用表里，单列） | 用 git 或手工复制 |
 
-### 4.5 匹配算法（Windows：registry ↔ winget）
+### 4.5 Windows 的判定依据：读 ID，不要猜名字
 
-1. 取 winget `id` 的最后一段（`Publisher.AppName` → `AppName`）
-2. 两侧都归一化：转小写、去掉 `(x64)`/`(x86)`/版本号/标点/空格
-3. 打分：
-   - 完全相等 → `0.95`
-   - 一方包含另一方且长度差 ≤ 6 → `0.75`
-   - 否则 → `0.5`
-4. 取最高分匹配，`0.5` 以下视为未匹配
-5. 未匹配的 winget 包：单独作为一条 `auto`，名称取 ID 最后一段并美化（`VisualStudioCode` → `Visual Studio Code` 尽力而为）
+**这是 v0.1.1 修正的核心。** 早期版本用「显示名 → winget ID」模糊匹配，在非英文环境下几乎失效：
 
-**不要为了凑数强行匹配。** 匹配错了比不匹配更糟。
+- 微信的 display name 是 `微信`，包 ID 是 `Tencent.WeChat.Universal`，字面毫无交集
+- `剪映专业版` vs `ByteDance.JianyingPro`、`千问` vs `Alibaba.Qianwen` 同理
+- 实测 69 个注册表应用只匹配上 12 个（17%），且产生 `x64`、`L T S`、`10` 这类垃圾条目
+
+正确做法：直接读 `winget list` 的 `kind` 字段（采集器已解析好）。
+
+**要求：**
+
+1. **不要**用显示名去反查包 ID
+2. **不要**从 ID 里截取末段当应用名（`Microsoft.VCRedist.2015+.x64` 会截出 `x64`）
+3. 未匹配任何来源的条目，宁可判 `manual`，也不要编造一个包 ID
+4. 商店应用（`msix`）单独计数，不混进"可自动 / 需手动"
 
 ### 4.6 配置路径
 

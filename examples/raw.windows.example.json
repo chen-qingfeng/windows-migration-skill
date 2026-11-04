@@ -72,10 +72,11 @@
     }
   ],
   "winget": [
-    { "id": "Git.Git", "version": "2.47.0", "source_name": "winget" },
-    { "id": "7zip.7zip", "version": "24.09", "source_name": "winget" },
-    { "id": "Microsoft.VisualStudioCode", "version": "1.95.0", "source_name": "winget" },
-    { "id": "Adobe.Photoshop", "version": "25.0", "source_name": "winget" }
+    { "name": "Git", "id": "Git.Git", "kind": "package", "version": "2.47.0" },
+    { "name": "7-Zip 24.09 (x64)", "id": "7zip.7zip", "kind": "package", "version": "24.09" },
+    { "name": "Visual Studio Code", "id": "Microsoft.VisualStudioCode", "kind": "package", "version": "1.95.0" },
+    { "name": "Adobe Photoshop 2024", "id": "Adobe.Photoshop", "kind": "package", "version": "25.0" },
+    { "name": "OpenFilm 0.2.7", "id": "ARP\\Machine\\X64\\{0A1B2C3D-0000-1111-2222-333344445555}", "kind": "arp", "version": "0.2.7" }
   ],
   "scoop": [],
   "choco": [],

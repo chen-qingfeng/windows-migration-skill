@@ -1,6 +1,7 @@
 # Collector output (contains machine-specific paths)
 profile.raw.json
 profile.json
+profile.classified.json
 report.md
 
 # Editor / OS noise

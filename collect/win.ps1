@@ -178,72 +178,73 @@ function Get-RegistryApps {
 
 # ---------------------------------------------------------------- winget
 
-function Get-WingetPackages {
+function Get-WingetInstalled {
+    # `winget list` is the authoritative source. Its ID prefix *is* the answer:
+    #   Publisher.Product  -> a real winget package exists   -> auto
+    #   ARP\...            -> installed via registry only    -> manual
+    #   MSIX\...           -> Microsoft Store app            -> store
+    # This replaces name-to-ID fuzzy matching, which fails badly for localized apps.
     $exe = Get-Command winget -ErrorAction SilentlyContinue
     if (-not $exe) {
-        Add-Warning 'winget not found; skipping package identification.'
+        Add-Warning 'winget not found; falling back to registry only.'
         return @()
     }
-    $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ('wms-winget-' + [guid]::NewGuid().ToString('N') + '.json')
+
+    $lines = @()
     try {
-        $argList = @('export', '-o', ('"' + $tmp + '"'), '--disable-interactivity', '--accept-source-agreements', '--include-versions')
-        $p = Start-Process -FilePath $exe.Source -ArgumentList $argList -PassThru -WindowStyle Hidden -ErrorAction Stop
-        $null = $p.WaitForExit(120000)
-        if (-not $p.HasExited) {
-            try { $p.Kill() } catch { }
-            Add-Warning 'winget export timed out after 120s; package identification may be incomplete.'
-        }
+        $lines = @(& $exe.Source list --disable-interactivity --accept-source-agreements 2>$null)
     } catch {
-        Add-Warning ('winget export failed: ' + $_.Exception.Message)
+        Add-Warning ('winget list failed: ' + $_.Exception.Message)
+        return @()
+    }
+    if ($lines.Count -eq 0) {
+        Add-Warning 'winget list returned no rows.'
         return @()
     }
 
-    if (-not (Test-Path -LiteralPath $tmp)) {
-        Add-Warning 'winget export produced no file.'
-        return @()
-    }
+    $result = New-Object System.Collections.ArrayList
+    $kindPrefix = '^(MSIX\\|ARP\\)'
+    $pkgShape   = '^[A-Za-z][A-Za-z0-9._\-]*\.[A-Za-z0-9][A-Za-z0-9._\-+]*$'
+    $verShape   = '^\d+(\.\d+)*$'
 
-    $raw = $null
-    try { $raw = Get-Content -LiteralPath $tmp -Raw -Encoding UTF8 | ConvertFrom-Json } catch { }
-    try { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue } catch { }
-    if ($null -eq $raw) { return @() }
+    foreach ($line in $lines) {
+        if ([string]::IsNullOrWhiteSpace($line)) { continue }
+        if ($line -match '^\s*(名称|Name|Nazwa|Nom|Name)\s{2,}') { continue }
+        if ($line -match '^-{5,}') { continue }
 
-    $packages = New-Object System.Collections.ArrayList
-    $sources = @()
-    if ($raw.PSObject.Properties.Name -contains 'Sources') {
-        $sources = @($raw.Sources)
-    } elseif ($raw.PSObject.Properties.Name -contains 'Packages') {
-        $sources = @([pscustomobject]@{
-            Packages      = @($raw.Packages)
-            SourceDetails = [pscustomobject]@{ Name = 'winget' }
+        $parts = @($line -split '\s{2,}' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+        if ($parts.Count -lt 2) { continue }
+
+        $idIndex = -1
+        for ($i = 1; $i -lt $parts.Count; $i++) {
+            $candidate = $parts[$i].Trim()
+            if ($candidate -match $kindPrefix) { $idIndex = $i; break }
+            if ($candidate -match $pkgShape -and $candidate -notmatch $verShape) { $idIndex = $i; break }
+        }
+        if ($idIndex -lt 0) { continue }
+
+        $name = ($parts[0..($idIndex - 1)] -join '  ').Trim()
+        if ([string]::IsNullOrWhiteSpace($name)) { continue }
+
+        $id = $parts[$idIndex].Trim()
+        $kind = 'package'
+        if ($id.StartsWith('ARP\')) { $kind = 'arp' }
+        elseif ($id.StartsWith('MSIX\')) { $kind = 'msix' }
+
+        $version = ''
+        $vi = $idIndex + 1
+        if ($vi -lt $parts.Count -and $parts[$vi].Trim() -match $verShape) { $version = $parts[$vi].Trim() }
+
+        $null = $result.Add([pscustomobject]@{
+            name    = $name
+            id      = $id
+            kind    = $kind
+            version = $version
         })
     }
 
-    foreach ($src in $sources) {
-        if ($null -eq $src) { continue }
-        $srcName = 'winget'
-        if ($src.PSObject.Properties.Name -contains 'SourceDetails' -and $src.SourceDetails) {
-            if ($src.SourceDetails.PSObject.Properties.Name -contains 'Name') {
-                $srcName = [string]$src.SourceDetails.Name
-            }
-        }
-        $pkgs = @()
-        if ($src.PSObject.Properties.Name -contains 'Packages') { $pkgs = @($src.Packages) }
-        foreach ($pkg in $pkgs) {
-            if ($null -eq $pkg) { continue }
-            $id = ''
-            if ($pkg.PSObject.Properties.Name -contains 'PackageIdentifier') { $id = [string]$pkg.PackageIdentifier }
-            if ([string]::IsNullOrWhiteSpace($id)) { continue }
-            $ver = ''
-            if ($pkg.PSObject.Properties.Name -contains 'Version') { $ver = [string]$pkg.Version }
-            $null = $packages.Add([pscustomobject]@{
-                id          = $id
-                version     = $ver
-                source_name = $srcName
-            })
-        }
-    }
-    return @($packages)
+    if ($result.Count -eq 0) { Add-Warning 'winget list produced no parseable rows.' }
+    return @($result)
 }
 
 # ---------------------------------------------------------------- other package managers
@@ -492,8 +493,8 @@ $registry = @(Get-RegistryApps)
 
 $winget = @()
 if (-not $SkipWinget) {
-    Write-Host '  [2/6] winget packages (may take up to 2 min)...' -ForegroundColor DarkGray
-    $winget = @(Get-WingetPackages)
+    Write-Host '  [2/6] winget list (names + IDs)...' -ForegroundColor DarkGray
+    $winget = @(Get-WingetInstalled)
 } else {
     Write-Host '  [2/6] winget skipped' -ForegroundColor DarkGray
 }
