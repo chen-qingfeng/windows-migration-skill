@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1",
+  "tool": "windows-migration-skill",
+  "platform": "windows",
+  "generated_at": "2026-11-04T00:00:00Z",
+  "machine": { "os": "Windows 10", "arch": "x64" },
+  "registry": [
+    { "name": "Git", "version": "2.47.0", "publisher": "The Git Development Community", "source": "registry", "config_hints": [] },
+    { "name": "Notepad++", "version": "8.6", "publisher": "Notepad++ Team", "source": "registry", "config_hints": [] },
+    { "name": "微信", "version": "4.0.1", "publisher": "Tencent", "source": "registry", "config_hints": [] }
+  ],
+  "winget": [],
+  "scoop": [],
+  "choco": [],
+  "store": [],
+  "shortcuts": [],
+  "big_paths": [],
+  "warnings": ["winget not found; falling back to registry only."]
+}

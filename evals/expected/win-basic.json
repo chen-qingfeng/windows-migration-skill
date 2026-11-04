@@ -1,0 +1,9 @@
+{
+  "desc": "Git / 7-Zip / 微信 have real winget packages -> auto. Adobe hits the license keyword. VC++ Redistributable is excluded. SomeSoft is ARP -> manual. PortableTool is a shortcut -> manual. Calculator is MSIX -> store, not counted.",
+  "counted": 6,
+  "auto": 3,
+  "manual": 2,
+  "license": 1,
+  "excluded": 1,
+  "store": 1
+}

@@ -1,0 +1,9 @@
+{
+  "desc": "License keyword outranks 'has a winget package': AutoCAD and Acrobat are installable but not activatable. App Manager is a vendor component -> excluded.",
+  "counted": 3,
+  "auto": 0,
+  "manual": 0,
+  "license": 3,
+  "excluded": 1,
+  "store": 0
+}

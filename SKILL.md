@@ -82,7 +82,15 @@ bash collect/mac.sh profile.raw.json
 
 ### Step 4 — 分类
 
-按第 4 节的规则，把每个条目判为 `auto` / `manual` / `license` / `excluded`。
+**优先跑脚本，不要自己临场判断：**
+
+```powershell
+.\scripts\classify.ps1 -Raw profile.raw.json -Out profile.json
+```
+
+脚本读 [`rules/classify.json`](rules/classify.json)，输出是确定性的——同一份输入永远给同样的结果。
+
+只有在脚本跑不了（没有 PowerShell）的情况下，才按第 4 节的规则手工分类，并在报告里注明"本次由模型判断，可能与脚本结果不一致"。
 
 ### Step 5 — 渲染报告
 

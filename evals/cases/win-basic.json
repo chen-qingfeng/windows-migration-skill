@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1",
+  "tool": "windows-migration-skill",
+  "platform": "windows",
+  "generated_at": "2026-11-04T00:00:00Z",
+  "machine": { "os": "Windows 11", "arch": "x64" },
+  "registry": [
+    { "name": "Git", "version": "2.47.0", "publisher": "The Git Development Community", "source": "registry", "config_hints": [] },
+    { "name": "7-Zip 24.09 (x64)", "version": "24.09", "publisher": "Igor Pavlov", "source": "registry", "config_hints": [] },
+    { "name": "Adobe Photoshop 2024", "version": "25.0", "publisher": "Adobe Inc.", "source": "registry", "config_hints": ["%APPDATA%\\Adobe"] },
+    { "name": "微信", "version": "4.0.1", "publisher": "Tencent", "source": "registry", "config_hints": [] },
+    { "name": "SomeSoft 1.0", "version": "1.0", "publisher": "", "source": "registry", "config_hints": [] },
+    { "name": "Microsoft Visual C++ 2015 x64 Redistributable", "version": "14.0", "publisher": "Microsoft", "source": "registry", "config_hints": [] }
+  ],
+  "winget": [
+    { "name": "Git", "id": "Git.Git", "kind": "package", "version": "2.47.0" },
+    { "name": "7-Zip 24.09 (x64)", "id": "7zip.7zip", "kind": "package", "version": "24.09" },
+    { "name": "Adobe Photoshop 2024", "id": "Adobe.Photoshop", "kind": "package", "version": "25.0" },
+    { "name": "微信", "id": "Tencent.WeChat.Universal", "kind": "package", "version": "4.0.1" },
+    { "name": "SomeSoft 1.0", "id": "ARP\\Machine\\X64\\{11111111-2222-3333-4444-555555555555}", "kind": "arp", "version": "1.0" },
+    { "name": "Microsoft Visual C++ 2015 x64 Redistributable", "id": "ARP\\Machine\\X64\\{66666666-7777-8888-9999-000000000000}", "kind": "arp", "version": "14.0" },
+    { "name": "计算器", "id": "MSIX\\Microsoft.WindowsCalculator_11.2210.0.0_x64__8wekyb3d8bbwe", "kind": "msix", "version": "11.2210.0.0" }
+  ],
+  "scoop": [],
+  "choco": [],
+  "store": [],
+  "shortcuts": [
+    { "name": "PortableTool", "target": "D:\\Tools\\PortableTool\\tool.exe", "folder": "D:\\Tools\\PortableTool", "source": "shortcut" }
+  ],
+  "big_paths": [],
+  "warnings": []
+}

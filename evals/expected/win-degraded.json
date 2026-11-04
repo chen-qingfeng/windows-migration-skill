@@ -1,0 +1,9 @@
+{
+  "desc": "No winget data at all. Everything must degrade to manual, never to auto. This guards against 'guessing' a package ID.",
+  "counted": 3,
+  "auto": 0,
+  "manual": 3,
+  "license": 0,
+  "excluded": 0,
+  "store": 0
+}

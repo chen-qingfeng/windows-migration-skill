@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "description": "分类规则的唯一来源。scripts/classify.ps1 读它，SKILL.md 描述它。改规则只改这里，不要改散文。",
+
+  "classes": ["auto", "manual", "license", "excluded", "store"],
+  "counted_classes": ["auto", "manual", "license"],
+
+  "exclude": [
+    { "id": "vcredist",        "pattern": "Redistributable",                     "reason": "runtime" },
+    { "id": "runtime_package", "pattern": "Runtime Package|UWP Runtime",         "reason": "runtime" },
+    { "id": "dotnet",          "pattern": "\\.NET|Desktop Runtime|ASP\\.NET|Native Runtime", "reason": "runtime" },
+    { "id": "sdk",             "pattern": "\\bSDK\\b",                           "reason": "sdk" },
+    { "id": "driver",          "pattern": "\\bDriver\\b",                        "reason": "driver" },
+    { "id": "windows_update",  "pattern": "^Update for |^KB\\d+",                "reason": "os_update" },
+    { "id": "appcompat",       "pattern": "Application Compatibility",           "reason": "os_component" },
+    { "id": "wpt",             "pattern": "WPTx64",                              "reason": "sdk" },
+    { "id": "appx_runtime",    "pattern": "VCLibs|UI\\.Xaml|WindowsAppRuntime",   "reason": "runtime" },
+    { "id": "codemeter",       "pattern": "CodeMeter Runtime",                   "reason": "dongle_runtime" },
+    { "id": "addin",           "pattern": "Add-in",                              "reason": "addin" },
+    { "id": "vendor_bundle",   "pattern": "App Manager|Application Manager|Material Library|Content Service|Genuine Service|Identity Manager", "reason": "vendor_component" },
+    { "id": "vendor_bundle_cn","pattern": "精选应用|保存到 Web|Performance Feedback", "reason": "vendor_component" },
+    { "id": "autodesk_access", "pattern": "^Autodesk Access$",                   "reason": "vendor_component" },
+    { "id": "sketchup_input",  "pattern": "^SketchUp 输入",                       "reason": "vendor_component" },
+    { "id": "store_installer", "pattern": "^应用安装程序$|^App Installer$",        "reason": "os_component" }
+  ],
+
+  "license_keywords": [
+    "Adobe", "Autodesk", "MATLAB", "MathWorks", "Office 20", "Visio 20", "Project 20",
+    "CorelDRAW", "SolidWorks", "ANSYS", "Siemens NX", "CATIA", "ChemDraw", "CAD",
+    "加密狗", "一机一码", "授权码", "Dongle"
+  ],
+
+  "estimate_seconds": {
+    "auto": 25,
+    "manual": 180
+  },
+
+  "notes": {
+    "arbitration_order": "excluded -> license -> auto/manual。先排除系统组件，再看许可，最后看包里有没有。",
+    "auto_rule_windows": "winget[].kind == 'package' 即可自动重建；不要用显示名反查包 ID。",
+    "manual_rule_windows": "kind == 'arp' 或 winget 里没有该条目。",
+    "store_rule": "kind == 'msix' 的条目单列，不计入 counted。"
+  }
+}

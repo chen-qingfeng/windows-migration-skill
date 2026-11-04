@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1",
+  "tool": "windows-migration-skill",
+  "platform": "windows",
+  "generated_at": "2026-11-04T00:00:00Z",
+  "machine": { "os": "Windows 11", "arch": "x64" },
+  "registry": [
+    { "name": "Autodesk AutoCAD 2026", "version": "2026", "publisher": "Autodesk", "source": "registry", "config_hints": [] },
+    { "name": "Autodesk App Manager", "version": "3.0", "publisher": "Autodesk", "source": "registry", "config_hints": [] },
+    { "name": "Adobe Acrobat (64-bit)", "version": "26.0", "publisher": "Adobe", "source": "registry", "config_hints": [] },
+    { "name": "CAD快速看图v6.5.3", "version": "6.5.3", "publisher": "Glodon", "source": "registry", "config_hints": [] }
+  ],
+  "winget": [
+    { "name": "Autodesk AutoCAD 2026", "id": "Autodesk.AutoCAD", "kind": "package", "version": "2026" },
+    { "name": "Autodesk App Manager", "id": "ARP\\Machine\\X86\\{aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee}", "kind": "arp", "version": "3.0" },
+    { "name": "Adobe Acrobat (64-bit)", "id": "Adobe.Acrobat.Reader.64-bit", "kind": "package", "version": "26.0" },
+    { "name": "CAD快速看图v6.5.3", "id": "Glodon.CADReader.CN", "kind": "package", "version": "6.5.3" }
+  ],
+  "scoop": [],
+  "choco": [],
+  "store": [],
+  "shortcuts": [],
+  "big_paths": [],
+  "warnings": []
+}

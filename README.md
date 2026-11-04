@@ -104,16 +104,40 @@ bash collect/mac.sh profile.raw.json
 -SkipStore    # 不要商店应用
 ```
 
+### 不给 Agent，纯命令行跑
+
+```powershell
+.\collect\win.ps1 -OutFile profile.raw.json
+.\scripts\classify.ps1 -Raw profile.raw.json -Out profile.json
+```
+
+分类是**确定性的**：同一份输入 + 同一份规则 = 同样的输出（`apps` 数组会排序）。
+规则在 [`rules/classify.json`](rules/classify.json) 里，改规则不用改代码。
+
+### 跑测试
+
+```powershell
+.\evals\run.ps1
+```
+
+对三份固定样本跑分类并比对预期，改规则后用它确认没有把别的用例改坏。
+
 ---
 
 ## 仓库结构
 
 ```
 windows-migration-skill/
-├── SKILL.md                  ← 核心：Agent 读的操作手册 + 分类规则
+├── SKILL.md                  ← Agent 读的操作手册
+├── rules/classify.json       ← ★ 分类规则的唯一来源（数据，不是散文）
 ├── collect/
 │   ├── win.ps1               ← Windows 采集器（只读）
 │   └── mac.sh                ← macOS 采集器（只读，实验性）
+├── scripts/classify.ps1      ← 确定性分类器（读 rules/）
+├── evals/
+│   ├── cases/                ← 固定样本
+│   ├── expected/             ← 预期结果
+│   └── run.ps1               ← 回归测试
 ├── schema/profile.schema.json
 ├── templates/report.md.tmpl
 └── examples/
@@ -142,7 +166,7 @@ windows-migration-skill/
 ## 路线图
 
 - [x] **v0.1** 体检：采集 + 分类 + 报告（只读）
-- [ ] **v0.2** 规则变成数据 + evals：可回归、可比较准确率
+- [x] **v0.2** 规则变成数据 + evals：可回归、可比较准确率
 - [ ] **v0.3** 计划：生成还原脚本，**只生成不执行**
 - [ ] **v0.4** 安全网：影子环境 + 一键回滚（< 60 秒）
 - [ ] **v0.5** 两台机器：局域网直连，只搬大文件和配置
